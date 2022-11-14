@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>index</title>
+    <!-- <link href="css/media.css" rel="stylesheet" type="text/css" media="all" /> -->
+    <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script defer src="js/main.js"></script>
+    <style>
+        /* ------------------------------ */
+        :root {
+            --vh: 0px;
+            --vw: 0px;
+            --radius: 35px;
+        }
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        /* ::selection {
+            background-color: #202124;
+        } */
+        /* ------------------------------ */
+        :hover {
+            cursor: default;
+        }
+        button:hover,
+        .tags-menu2:hover,
+        #request-tag:hover,
+        #level-tag:hover,
+        #member-tag:hover,
+        .tags-menu:hover,
+        #chat-tag:hover,
+        #music-tag:hover,
+        input[type="range"]:hover {
+            cursor: pointer;
+        }
+        textarea:hover,
+        #password:hover,
+        #name-input:hover {
+            cursor: text;
+        }
+        /* ------------------------------ */
+        body {
+            background-color: #202124;
+            color: #eeeeee;
+            user-select: none;
+        }
+        video {
+            height: 100%;
+            width: 100%;
+            border-radius: var(--radius);
+        }
+        .text-wrapper {
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+        /* ------------------------------ */
+        .confirmArea {
+            width: 40vw;
+            height: 20vh;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .confirm {
+            height: 50%;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+        }
+        #password,
+        #name-input {
+            flex: 8;
+            margin: 20px;
+            resize:none;
+            font-size: larger;
+            background-color: #202124;
+            color: #eeeeee; 
+            border-color: #eeeeee;
+            border-style: solid;
+        }
+        #host-check,
+        #join-check {
+            flex: 2;
+            margin: 20px;
+            font-size: larger;
+            overflow: hidden;
+        }
+        /* ------------------------------ */
+        .topArea {
+            width: 100%;
+            height: 10vh;
+            display: none;
+            /* display: block; */
+        }
+        .mainArea {
+            width: 100%;
+            height: 85vh;
+            display: none;
+            /* display: flex; */
+            flex-direction: row;
+        }
+        /* ------------------------------ */
+        #username {
+            text-align: center;
+            height: 30px;
+        }
+        .btn_ctrl {
+            margin: 5px;
+        }
+        .videoArea {
+            flex: 75;
+            border-width: 2px;
+            border-right: 1px;
+            border-color: black;
+            border-style: solid;
+        }
+        .sideArea {
+            flex: 25;
+            border-width: 2px;
+            border-left: 1px;
+            border-color: black;
+            border-style: solid;
+            display: flex;
+            flex-direction: column;
+        }
+        /* ------------------------------ */
+        .chatArea {
+            flex: 7;
+            overflow: hidden;
+            border-width: 1px;
+            margin: 4px;
+            margin-bottom: 2px;
+            border-color: black;
+            border-style: solid;
+            display: flex;
+            flex-direction: column;
+        }
+        .audienceArea {
+            flex: 3;
+            overflow: hidden;
+            border-width: 1px;
+            margin: 4px;
+            margin-top: 2px;
+            border-color: black;
+            border-style: solid;
+            display: flex;
+            flex-direction: column;
+        }
+        /* ------------------------------ */
+        .tags-menu {
+            overflow: hidden;
+        }
+        #music-volume {
+            margin-left: 20px;
+        }
+        #music-tag {
+            padding: 5px;
+            color: #555555;
+        }
+        #chat-tag {
+            padding: 5px;
+            color: #eeeeee;
+        }
+        #music-container {
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            display: none;
+            /* display: flex; */
+            flex-direction: column;
+            position: relative;
+        }
+        #chat-container {
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        #goDown1,
+        #goDown2 {
+            position: absolute;
+            bottom: calc(10% + 15px);
+            left: calc(40%);
+            height: 30px;
+            width: 30px;
+            border: 1px;
+            border-radius: 30px;
+            border-color: #eeeeee;
+            border-style: solid;
+            color: #eeeeee;
+            font-size: larger; 
+            background-color: #202124;
+            opacity: 0.9;
+        }
+        /* ------------------------------ */
+        #musicroom {
+            flex: 9;
+            overflow: scroll;
+            padding: 5px;
+            border-width: 1px;
+            margin: 2px;
+            /* border-color: black;
+            border-style: solid; */
+        }
+        .music_ctrl {
+            flex: 1;
+            display: flex;
+            margin: 2px;
+            flex-direction: row;
+        }
+        #command-input {
+            flex: 9;
+            margin: 1px;
+            background-color: #202124;
+            color: #eeeeee;
+            resize:none;
+            white-space: pre-wrap;
+        }
+        #command-send {
+            flex: 1;
+            margin: 1px;
+        }
+        /* ------------------------------ */
+        #chatroom {
+            flex: 9;
+            overflow: scroll;
+            padding: 5px;
+            border-width: 1px;
+            margin: 2px;
+            /* border-color: black;
+            border-style: solid; */
+        }
+        .chat_ctrl {
+            flex: 1;
+            display: flex;
+            margin: 2px;
+            flex-direction: row;
+        }
+        #chat-input {
+            flex: 9;
+            margin: 1px;
+            background-color: #202124;
+            color: #eeeeee;
+            resize:none;
+            white-space: pre-wrap;
+        }
+        #chat-send {
+            flex: 1;
+            margin: 1px;
+        }
+        /* ------------------------------ */
+        .tags-menu2 {
+            overflow: hidden;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        #member-tag {
+            padding: 5px;
+            color: #eeeeee;
+        }
+        #request-tag,
+        #level-tag {
+            padding: 5px;
+            color: #555555;
+        }
+        .audience-constrain {
+            flex: 1;
+            height: 0;
+            padding: 2px;
+            border-width: 1px;
+            margin: 2px;
+            overflow: scroll;
+            /* border-color: black;
+            border-style: solid; */
+        }
+        #audience {
+            display: flex;
+            flex-direction: column;
+        }
+        #audience-request-response,
+        #audience-request {
+            display: none;
+            /* display: flex; */
+            flex-direction: column;
+        }
+        .audience-request-container {
+            margin: 10px;
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            overflow: hidden;
+        }
+        .audience-container {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            overflow: hidden;
+        }
+        .audience-container2 {
+            flex: 1;
+            order: 1;
+            display: flex;
+            flex-direction: row;
+            word-break: break-all;
+            word-wrap: break-word;
+            justify-content: flex-start;
+            align-items: center;
+            overflow: hidden;
+        }
+        input.mic-volume {
+            flex: 1;
+            order: 2;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        img.mic-icon {
+            pointer-events: none;
+            width: 18px;
+            height: 18px;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        /* ------------------------------ */
+        #videoBox {
+            height: 90%;
+            overflow: auto;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center; 
+        }
+        .video-container {
+            position: relative;
+            height: var(--vh);
+            width: var(--vw);
+            padding: 0px;
+            border-width: 1px;
+            margin: 2px;
+            border-color: black;
+            border-style: solid;
+            overflow: hidden;
+            border-radius: var(--radius);
+        }
+        .videoName {
+            position: absolute;
+            right : 0px;
+            bottom: 0px;
+            display: block;
+            height: 20px;
+            width: 100px;
+            padding: 2px;
+            border-width: 0px;
+            margin: 0px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #eeeeee;
+            text-align: center;
+            overflow: hidden;
+            border-radius: var(--radius) 0 var(--radius) 0;
+        }
+        .video-numbering {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            z-index: 2;
+            background-color: #000000;
+            opacity: 0.6;
+            font-size: 80px;
+            text-align: center;
+        }
+        /* ------------------------------ */
+    </style>
+</head>
+<body>
+    <!-- ###################################################################### -->
+    <div class="confirmArea">
+        <div class="confirm">
+            <input id="name-input" placeholder="請輸入暱稱 (最多15個字)">
+            <button id="join-check">聽眾加入</button>
+        </div>
+        <div class="confirm">
+            <input id="password" placeholder="主持人請輸入密碼" type="password">
+            <button id="host-check">主持人加入</button>
+        </div>
+    </div>
+    <div class="topArea">
+        <h2 id="username">USER</h2>
+        <div class="btn_ctrl">
+            <span class="user_btn-container">
+                <input type="checkbox" id="muted-toggle">
+                <span>全部靜音</span>
+                <select id="video-layout">
+                    <option value="auto" selected>自動排版</option>
+                    <option value="type1">排版 1</option>
+                    <option value="type2">排版 2</option>
+                    <option value="type3">排版 3</option>
+                </select>
+                <button id="video-sort">更改順序</button>
+            </span>
+            <span class="share_btn-container">
+                <button id="camera-toggle">開啟相機</button>
+                <button id="mic-toggle">開啟麥克風</button>
+                <button id="screen-toggle">開啟畫面分享</button>
+            </span>
+            <span class="request_btn-container">
+                <button id="request_btn">請求成為說話者</button>
+            </span>
+        </div>
+    </div>
+    <div class="mainArea">
+        <div class="videoArea">
+            <h3 style="margin: 7px">畫面</h3>
+            <div id="videoBox"></div>
+        </div>
+        <div class="sideArea">
+            <div class="chatArea">
+                <h3 class="tags-menu">
+                    <span id="chat-tag">聊天室</span>
+                    <span id="music-tag">機器人</span>
+                    <input type="range" id="music-volume">
+                </h3>
+                <div id = "chat-container">
+                    <div id="chatroom"></div>
+                    <div class="chat_ctrl">
+                        <textarea id="chat-input" placeholder="輸入訊息"></textarea>
+                        <button id="chat-send">送出</button>
+                    </div>
+                </div>
+                <div id = "music-container">
+                    <div id="musicroom"></div>
+                    <div class="music_ctrl">
+                        <textarea id="command-input" placeholder="輸入指令 (輸入yt查看所有指令)"></textarea>
+                        <button id="command-send">送出</button>
+                    </div>
+                </div>
+            </div>
+            <div class="audienceArea">
+                <h3 class="tags-menu2">
+                    <span id="member-tag">成員</span>
+                    <span id="level-tag">權限控制</span>
+                    <span id="request-tag">權限請求</span>
+                </h3>
+                <div class="audience-constrain">
+                    <div id="audience"></div>
+                    <div id="audience-request"></div>
+                    <div id="audience-request-response"></div>
+                </div>
+                <div id="audioBox"></div>
+            </div>
+        </div>
+    </div>
+    <!-- ###################################################################### -->
+</body>
+</html>

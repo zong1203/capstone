@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.20",
+    "peer": "^0.6.1",
+    "socket.io": "^4.5.3",
+    "yt-search": "^2.10.3",
+    "ytdl-core": "^4.11.2"
+  },
+  "scripts": {
+    "test": "nodemon private/server.js",
+    "server": "node private/server.js"
+  }
+}
